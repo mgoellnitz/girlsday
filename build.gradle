@@ -1,0 +1,109 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+defaultTasks 'clean', 'build'
+
+buildscript {
+  repositories {
+    jcenter()
+    maven { url "http://oss.jfrog.org/artifactory/oss-snapshot-local" }
+  }
+  dependencies {
+    classpath 'tangram:gradle-plugin:1.1-SNAPSHOT'
+    classpath 'org.akhikhl.gretty:gretty:1.2.4'
+  }
+}
+
+def tangram_version = '1.1-SNAPSHOT'
+def servlet_container = project.hasProperty('container') ? "$container" : 'jetty9' // jetty7, jetty8', jetty9, tomcat7, tomcat8
+def log_dir = "./logs"
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'tangram'
+apply plugin: 'org.akhikhl.gretty'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  jcenter()
+  // the tangram snapshots
+  maven { url "http://oss.jfrog.org/artifactory/oss-snapshot-local" }
+}
+
+configurations {
+  libs
+}
+
+artifacts {
+  archives war
+  libs jar
+}
+
+sourceSets {
+  // fake openshift scripts as resources for test to have them visible in the development environment
+  test {
+    resources {
+      srcDir 'src/test/resources'
+      srcDir '.openshift/action_hooks'
+    }
+  }
+}
+
+dependencies {
+  providedCompile "org.projectlombok:lombok:$versions.lombok"
+
+  webapp "tangram:tangram-core:$tangram_version:war@war"
+  compile "tangram:tangram-nucleus:$tangram_version"
+  // For MongoDB
+  runtime "org.datanucleus:datanucleus-mongodb:$versions.datanucleus"
+
+  compile "tangram:tangram-dinistiq:$tangram_version"
+
+  webapp "tangram:tangram-editor:$tangram_version:war@war"
+  runtime "tangram:tangram-editor:$tangram_version"
+
+  runtime "ch.qos.logback:logback-classic:$versions.logback"
+
+  testCompile "org.testng:testng:$versions.testng"
+
+  providedCompile "$versions.servlet_api"
+  providedCompile "$versions.jsp_api"
+}
+
+test {
+  useTestNG() {
+  }
+}
+
+processResources {
+  filter(ReplaceTokens, tokens: [app: project.name.toString(), logdir: log_dir.toString()])
+}
+
+war {
+  archiveName = 'ROOT.war'
+  destinationDir = file('tomcat/webapps')
+
+  webXml = file("src/main/webapp/WEB-INF/web-dinistiq.xml")
+  classpath = jar.outputs.files + configurations.runtime - configurations.providedRuntime
+  excludes = [ 'classes/**', 'WEB-INF/web*.xml' ]
+}
+
+gretty {
+  contextPath=''
+  servletContainer = "$servlet_container"
+  logDir = "$log_dir"
+  logFileName = "$servlet_container"
+  consoleLogEnabled = false
+  httpsEnabled=true
+  httpPort=12380
+  httpsPort=12343
+  servicePort=12390
+  statusPort=12391
+  webappCopy {
+    into ('WEB-INF') {
+      from "$project.projectDir/src/main/webapp/WEB-INF/web-dinistiq.xml"
+      rename("web-dinistiq.xml", "web.xml")
+    }
+  }
+}
