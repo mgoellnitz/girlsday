@@ -12,7 +12,7 @@ Used to practically illustrate the different parts and pieces of today's web pro
 
 Based on "Stock Tomcat with Gradle" project for openshift together with tangram:
 
-![Tangram](http://www.girls-day.de/design/girls_day/images/girls-day-logo.png)
+![Tangram](https://raw.githubusercontent.com/mgoellnitz/girlsday/master/tangram-logo-fulltext-small.jpg)
 
 
 This is a Stock Apache Tomcat together with Gradle Quickstart for the Redhat OpenShift platform.
