@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH=/gradle-2.12/bin
+export PATH=/gradle-2.12/bin:$PATH
 export JAVA_HOME=/c/Program\ Files/Java/jdk1.7.0_76
 export OPENSHIFT_MONGODB_DB_HOST=ds021671.mlab.com
 export OPENSHIFT_MONGODB_DB_PORT=21671
