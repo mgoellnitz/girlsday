@@ -1,26 +1,21 @@
 #!/bin/bash
-#
-# Copyright 2016 Martin Goellnitz
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
 # .openshift/action_hooks/pre_build:
 
 # gradle storage dir build
 set -x
 
 echo "Pre build"
+DIR=`pwd`
+cd $OPENSHIFT_DATA_DIR
+# obtain gradle
+export GRADLE_VERSION=2.13
+if [ ! -d $OPENSHIFT_DATA_DIR/gradle-${GRADLE_VERSION} ] ; then
+  wget http://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip
+  unzip gradle-${GRADLE_VERSION}-bin.zip
+  rm -f gradle-${GRADLE_VERSION}-bin.zip
+fi
+# prepare gradle dir
 if [ ! -d $OPENSHIFT_DATA_DIR/gradle ] ; then
     mkdir $OPENSHIFT_DATA_DIR/gradle
 fi
+cd $DIR
