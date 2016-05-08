@@ -14,8 +14,15 @@ Based on "Stock Tomcat with Gradle" project for openshift together with tangram:
 
 ![Tangram](https://raw.githubusercontent.com/mgoellnitz/girlsday/master/tangram-logo-fulltext-small.jpg)
 
+## Deployment
 
-This is a Stock Apache Tomcat together with Gradle Quickstart for the Redhat OpenShift platform.
+This example can for simplicity directly be deployed to the OpenShift Platform from the creation dialog when y
+ou enter this github.com repository URL.
+
+Since you will need to add the MongoDB afterwards, you have to clean the Tangram Restart Cache by removing the 
+corresponding file manually. After that step everything should work like to the local use case.
+
+## Quickstart for Stock Apache Tomcat together with Gradle on the OpenShift Platform
 
 Look at the action hooks to understand the steps customized and change the version of Gradle and Apache Tomcat there easily.
 
