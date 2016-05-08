@@ -1,11 +1,11 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-defaultTasks 'clean', 'build'
-
 plugins {
   id "org.akhikhl.gretty" version "1.2.4"
   id "tangram.tools" version "1.1.2"
 }
+
+defaultTasks 'clean', 'build'
 
 def tangram_version = '1.1.2'
 def servlet_container = project.hasProperty('container') ? "$container" : 'jetty9' // jetty7, jetty8', jetty9, tomcat7, tomcat8
